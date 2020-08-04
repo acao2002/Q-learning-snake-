@@ -50,9 +50,9 @@ def gameLoop():
  
     foodx = round(random.randrange(0, dis_width - snake_block) / 10.0) * 10.0
     foody = round(random.randrange(0, dis_height - snake_block) / 10.0) * 10.0
- 
+    direction = "none"
     while not game_over:
- 
+        
         while game_close == True:
             dis.fill(white)
             message("You Lost! Press C-Play Again or Q-Quit", black)
@@ -71,18 +71,23 @@ def gameLoop():
             if event.type == pygame.QUIT:
                 game_over = True
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
+                
+                if event.key == pygame.K_LEFT and direction != "right":
                     x1_change = -snake_block
                     y1_change = 0
-                elif event.key == pygame.K_RIGHT:
+                    direction = "left"
+                if event.key == pygame.K_RIGHT and direction != "left":
                     x1_change = snake_block
                     y1_change = 0
-                elif event.key == pygame.K_UP:
+                    direction = "right"
+                if event.key == pygame.K_UP and direction != "down":
                     y1_change = -snake_block
                     x1_change = 0
-                elif event.key == pygame.K_DOWN:
+                    direction = "up"
+                if event.key == pygame.K_DOWN and direction != "up":
                     y1_change = snake_block
                     x1_change = 0
+                    direction = "down"
  
         if x1 >= dis_width or x1 < 0 or y1 >= dis_height or y1 < 0:
             game_close = True
@@ -90,11 +95,12 @@ def gameLoop():
         y1 += y1_change
         dis.fill(white)
         pygame.draw.rect(dis, green, [foodx, foody, snake_block, snake_block])
+        pygame.draw.rect(dis, black, (0, 0, 800, 600), 3)  # width = 3
         snake_Head = []
         snake_Head.append(x1)
         snake_Head.append(y1)
         snake_List.append(snake_Head)
-        print(snake_Head)
+        print(direction)
         if len(snake_List) > Length_of_snake:
             del snake_List[0]
  
