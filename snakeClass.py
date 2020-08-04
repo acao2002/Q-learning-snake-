@@ -75,3 +75,8 @@ class Food:
      def start(self):
         pygame.draw.rect(dis, self.color, [self.foodx, self.foody, self.size, self.size])
 
+     def restart(self): 
+        self.foodx = round(random.randrange(0, dis_width - 10) / 10.0) * 10.0
+        self.foody =round(random.randrange(0, dis_height - 10) / 10.0) * 10.0
+        self.position = (self.foodx, self.foody)
+

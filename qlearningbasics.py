@@ -49,6 +49,8 @@ for episode in range(EPISODES):
 
         new_state, reward, done, _ = env.step(action)
 
+        print(new_state.dtype)
+
         new_discrete_state = get_discrete_state(new_state)
 
         if episode % SHOW_EVERY == 0:

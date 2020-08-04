@@ -9,21 +9,21 @@ LEARNING_RATE = 0.1
 
 DISCOUNT = 0.95
 EPISODES = 100
-SHOW_EVERY = 5
+SHOW_EVERY = 1
 
-DISCRETE_OS_SIZE = [30, 20, 30, 20]
+DISCRETE_OS_SIZE = [31, 21, 31, 21]
 discrete_os_win_size = 10
 
 q_table = np.random.uniform(low = -1, high = 1, size = (DISCRETE_OS_SIZE + [4]))
 
 def get_discrete_state(snake, food):
     combine = (snake + food)
-    discrete_state = tuple( t/10 for t in combine)
+    discrete_state = tuple(int(t/10) for t in combine)
     return discrete_state
 
 epsilon = 1  # not a constant, qoing to be decayed
 START_EPSILON_DECAYING = 1
-END_EPSILON_DECAYING = EPISODES//2
+END_EPSILON_DECAYING = EPISODES//10
 epsilon_decay_value = epsilon/(END_EPSILON_DECAYING - START_EPSILON_DECAYING)
 
 pygame.init()
@@ -57,6 +57,7 @@ def gameLoop():
     food = Food(green, snake_block)
    
     for episode in range(EPISODES):
+        global epsilon
         current_state = get_discrete_state(snake.position, food.position)
         game_over = False
         while not game_over: 
@@ -64,35 +65,57 @@ def gameLoop():
 
             if np.random.random() > epsilon:
                 # Get action from Q table
-                act = np.argmax(q_table[discrete_state])
+                action = np.argmax(q_table[current_state])
             else:
                 # Get random action
-                act = np.random.randint(0, 3)
+                action = np.random.randint(0, 4)
             
-            print(act)
-            snake.move(act)
+            
+            snake.move(action)
             snake.updateposition()
             new_state = get_discrete_state(snake.position, food.position)
-           
+            
+            if snake.x1 == food.foodx and snake.y1 == food.foody:
+                reward = 1
+                food.restart()
+                q_table[current_state + (action,)] = 1
+                game_over = True
+            else: 
+                reward = 0
+            if not game_over:
+
+                max_future_q = np.max(q_table[new_state])
+
+                # Current Q value (for current state and performed action)
+                current_q = q_table[current_state + (action,)]
+
+                # And here's our equation for a new Q value for current state and action
+                new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q)
+
+                # Update Q table with new Q value
+                q_table[current_state + (action,)] = new_q
+
             if snake.checkposition():     
-                reward = -1
                 snake.reset()
+                q_table[current_state + (action,)] = -1
                 game_over = True
                 
 
-            if snake.x1 == food.foodx and snake.y1 == food.foody:
-                reward = 1
-                snake.reset()
-                game_over = True
+            
+            
+
                 
             dis.fill(white)
             snake.start()
             food.start()
             if episode % SHOW_EVERY == 0:
                 pygame.display.update()
-                print(current_state)
-                print(new_state)
+                print(episode)
             clock.tick(snake_speed)
+            current_state = new_state
+        
+        if END_EPSILON_DECAYING >= episode >= START_EPSILON_DECAYING:
+            epsilon -= epsilon_decay_value
         
     pygame.quit()
     quit()
