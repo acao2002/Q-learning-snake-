@@ -24,8 +24,8 @@ snake_speed = 15
  
 font_style = pygame.font.SysFont("bahnschrift", 25)
 score_font = pygame.font.SysFont("comicsansms", 35)
- 
 
+reward = 0
 class Snake:
     x1 = dis_width/2
     y1 = dis_height/2
@@ -65,21 +65,30 @@ class Snake:
             return True
         else: 
             return False
- 
+class Food:
+     foodx = round(random.randrange(0, dis_width - 10) / 10.0) * 10.0
+     foody = round(random.randrange(0, dis_height - snake_block) / 10.0) * 10.0
+
+     def __init__(self, color, size):
+        self.color = color
+        self.size = size 
+        self.step = size
+    
+     def start(self):
+        pygame.draw.rect(dis, self.color, [self.foodx, self.foody, self.size, self.size])
+
 def gameLoop():
     game_over = False
-    foodx = round(random.randrange(0, dis_width - snake_block) / 10.0) * 10.0
-    foody = round(random.randrange(0, dis_height - snake_block) / 10.0) * 10.0
-    direction = "none"
     snake = Snake(black, snake_block)
-    while not game_over:
-        
- 
+    food = Food(green, snake_block)
+   
+    
+    while not game_over:  
+        global reward
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_over = True
-            if event.type == pygame.KEYDOWN:
-                
+            if event.type == pygame.KEYDOWN:   
                 if event.key == pygame.K_LEFT:
                     snake.left()
                 if event.key == pygame.K_RIGHT:
@@ -89,18 +98,27 @@ def gameLoop():
                 if event.key == pygame.K_DOWN:
                     snake.down()
 
-        game_close = snake.checkposition()
-        
+        if snake.checkposition():     
+            reward = 0
+            print(reward) 
+            gameLoop()
+            
+
+        if snake.x1 == food.foodx and snake.y1 == food.foody:
+            reward = 1
+            print(reward) 
+            gameLoop()
+             
         dis.fill(white)
         snake.updateposition()
         snake.start()
- 
+        food.start()
         pygame.display.update()
  
         clock.tick(snake_speed)
- 
+    
     pygame.quit()
     quit()
  
- 
+
 gameLoop()
