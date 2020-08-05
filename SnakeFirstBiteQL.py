@@ -5,12 +5,13 @@ from snakeClass import Snake
 from snakeClass import Food
 import numpy as np
 import pickle
+import math 
 
 LEARNING_RATE = 0.1
 
 DISCOUNT = 0.95
-EPISODES = 20
-SHOW_EVERY = 5
+EPISODES = 200
+SHOW_EVERY = 1
 
 DISCRETE_OS_SIZE = [16, 11, 16, 11]
 discrete_os_win_size = 10
@@ -21,6 +22,10 @@ def get_discrete_state(snake, food):
     combine = (snake + food)
     discrete_state = tuple(int(t/10) for t in combine)
     return discrete_state
+
+def caldistance(snake,food):
+    distance = math.sqrt((snake[0]-food[0])**2 + (snake[1]-food[1])**2)
+    return float(distance) 
 
 epsilon = 1  # not a constant, qoing to be decayed
 START_EPSILON_DECAYING = 1
@@ -61,7 +66,10 @@ def gameLoop():
         global epsilon
         current_state = get_discrete_state(snake.position, food.position)
         game_over = False
-        while not game_over: 
+        current_distance = caldistance(snake.position, food.position)
+        while not game_over:
+            r1 = 0 
+            r2 = 0 
             global reward
 
             if np.random.random() > epsilon:
@@ -75,12 +83,21 @@ def gameLoop():
             snake.move(action)
             snake.updateposition()
             new_state = get_discrete_state(snake.position, food.position)
+            new_distance = caldistance(snake.position, food.position)
             
             if snake.position == food.position:
-                reward = 1
+                r1 = 1
                 food.restart()
+                print('point')
             else: 
-                reward = 0
+                r1 = 0
+            if new_distance > current_distance:
+                r2 = -0.2
+            elif new_distance < current_distance:
+                r2 = 0.2
+            
+            reward = r1 + r2 
+
             if not game_over:
 
                 max_future_q = np.max(q_table[new_state])
@@ -106,6 +123,7 @@ def gameLoop():
                 pygame.display.update()
             clock.tick(snake_speed)
             current_state = new_state
+            new_distance = current_distance
         
         if END_EPSILON_DECAYING >= episode >= START_EPSILON_DECAYING:
             epsilon -= epsilon_decay_value

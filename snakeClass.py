@@ -64,8 +64,8 @@ class Snake:
      
 
 class Food:
-     foodx = round(random.randrange(0, dis_width - 10) / 10.0) * 10.0
-     foody = round(random.randrange(0, dis_height - 10) / 10.0) * 10.0
+     foodx = round(random.randrange(20, dis_width - 20) / 10.0) * 10.0
+     foody = round(random.randrange(20, dis_height - 20) / 10.0) * 10.0
      position = (foodx,foody)
      def __init__(self, color, size):
         self.color = color
@@ -76,7 +76,7 @@ class Food:
         pygame.draw.rect(dis, self.color, [self.foodx, self.foody, self.size, self.size])
 
      def restart(self): 
-        self.foodx = round(random.randrange(0, dis_width - 10) / 10.0) * 10.0
-        self.foody = round(random.randrange(0, dis_height - 10) / 10.0) * 10.0
+        self.foodx = round(random.randrange(10, dis_width - 20) / 10.0) * 10.0
+        self.foody = round(random.randrange(10, dis_height - 20) / 10.0) * 10.0
         self.position = (self.foodx, self.foody)
 
