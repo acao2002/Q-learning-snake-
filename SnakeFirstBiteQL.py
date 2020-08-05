@@ -4,14 +4,15 @@ import random
 from snakeClass import Snake 
 from snakeClass import Food
 import numpy as np
+import pickle
 
 LEARNING_RATE = 0.1
 
 DISCOUNT = 0.95
-EPISODES = 100
-SHOW_EVERY = 1
+EPISODES = 20
+SHOW_EVERY = 5
 
-DISCRETE_OS_SIZE = [26, 21, 26, 21]
+DISCRETE_OS_SIZE = [16, 11, 16, 11]
 discrete_os_win_size = 10
 
 q_table = np.random.uniform(low = -1, high = 1, size = (DISCRETE_OS_SIZE + [4]))
@@ -23,7 +24,7 @@ def get_discrete_state(snake, food):
 
 epsilon = 1  # not a constant, qoing to be decayed
 START_EPSILON_DECAYING = 1
-END_EPSILON_DECAYING = EPISODES//5
+END_EPSILON_DECAYING = EPISODES
 epsilon_decay_value = epsilon/(END_EPSILON_DECAYING - START_EPSILON_DECAYING)
 
 pygame.init()
@@ -35,8 +36,8 @@ red = (213, 50, 80)
 green = (0, 255, 0)
 blue = (50, 153, 213)
  
-dis_width = 250
-dis_height = 200
+dis_width = 150
+dis_height = 100
  
 dis = pygame.display.set_mode((dis_width, dis_height))
 pygame.display.set_caption('Snake Game by An Cao')
@@ -75,8 +76,9 @@ def gameLoop():
             snake.updateposition()
             new_state = get_discrete_state(snake.position, food.position)
             
-            if snake.x1 == food.foodx and snake.y1 == food.foody:
+            if snake.position == food.position:
                 reward = 1
+                food.restart()
             else: 
                 reward = 0
             if not game_over:
@@ -98,17 +100,19 @@ def gameLoop():
                 game_over = True
                 
             dis.fill(white)
-            snake.start()
-            food.start()
-            pygame.display.update()
-            print(episode)
-            print(reward)
+            if episode % SHOW_EVERY == 0:
+                snake.start()
+                food.start()
+                pygame.display.update()
             clock.tick(snake_speed)
             current_state = new_state
         
         if END_EPSILON_DECAYING >= episode >= START_EPSILON_DECAYING:
             epsilon -= epsilon_decay_value
-        
+        print(episode)
+    output = open('data.pkl', 'wb')
+    pickle.dump(q_table, output)
+    output.close()
     pygame.quit()
     quit()
  

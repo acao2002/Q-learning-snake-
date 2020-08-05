@@ -1,13 +1,13 @@
 import random
 import pygame
  
-dis_width = 250
-dis_height = 200
+dis_width = 150
+dis_height = 100
 snake_block = 10
 dis = pygame.display.set_mode((dis_width, dis_height))
 class Snake:
-    x1 = dis_width/2
-    y1 = dis_height/2
+    x1 = 70
+    y1 = 50
     x1_change = 0
     y1_change = 0
     position = (x1,y1)
@@ -46,8 +46,8 @@ class Snake:
         else: 
             return False
     def reset(self):
-        self.x1 = dis_width/2
-        self.y1 = dis_height/2
+        self.x1 = 70
+        self.y1 = 50
         self.x1_change = 0
         self.y1_change = 0
         self.position = (self.x1,self.y1)
@@ -64,8 +64,8 @@ class Snake:
      
 
 class Food:
-     foodx = 120
-     foody = 20
+     foodx = round(random.randrange(0, dis_width - 10) / 10.0) * 10.0
+     foody = round(random.randrange(0, dis_height - 10) / 10.0) * 10.0
      position = (foodx,foody)
      def __init__(self, color, size):
         self.color = color
