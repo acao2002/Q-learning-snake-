@@ -13,15 +13,19 @@ DISCOUNT = 0.95
 EPISODES = 200
 SHOW_EVERY = 1
 
-DISCRETE_OS_SIZE = [16, 11, 16, 11]
+DISCRETE_OS_SIZE = [15, 10]
 discrete_os_win_size = 10
 
-q_table = np.random.uniform(low = -1, high = 1, size = (DISCRETE_OS_SIZE + [4]))
+q_table = {}
+
+for i in range(-14, 15):
+    for ii in range(-9, 10):
+        q_table[(i, ii)] = [np.random.uniform(-3, 0) for i in range(4)]
+
 
 def get_discrete_state(snake, food):
-    combine = (snake + food)
-    discrete_state = tuple(int(t/10) for t in combine)
-    return discrete_state
+    discrete_state = (int((food[0]-snake[0])/10), int((food[1]-snake[1])/10))
+    return tuple(discrete_state)
 
 def caldistance(snake,food):
     distance = math.sqrt((snake[0]-food[0])**2 + (snake[1]-food[1])**2)
@@ -86,7 +90,7 @@ def gameLoop():
             new_distance = caldistance(snake.position, food.position)
             
             if snake.position == food.position:
-                r1 = 1
+                r1 = 5
                 food.restart()
                 print('point')
             else: 
@@ -103,17 +107,16 @@ def gameLoop():
                 max_future_q = np.max(q_table[new_state])
 
                 # Current Q value (for current state and performed action)
-                current_q = q_table[current_state + (action,)]
+                current_q = q_table[current_state][action]
 
                 # And here's our equation for a new Q value for current state and action
                 new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q)
 
                 # Update Q table with new Q value
-                q_table[current_state + (action,)] = new_q
+                q_table[current_state][action] = new_q
 
             if snake.checkposition():     
                 snake.reset()
-                q_table[current_state + (action,)] = -1
                 game_over = True
                 
             dis.fill(white)

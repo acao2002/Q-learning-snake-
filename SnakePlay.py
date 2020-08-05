@@ -32,9 +32,8 @@ snake_block = 10
 snake_speed = 15
 
 def get_discrete_state(snake, food):
-    combine = (snake + food)
-    discrete_state = tuple(int(t/10) for t in combine)
-    return discrete_state
+    discrete_state = (int((food[0]-snake[0])/10), int((food[1]-snake[1])/10))
+    return tuple(discrete_state)
 
 def gameLoop():
     snake = Snake(black, snake_block)
