@@ -29,7 +29,7 @@ pygame.display.set_caption('Snake Game by An Cao')
 clock = pygame.time.Clock()
  
 snake_block = 10
-snake_speed = 15
+snake_speed = 10
 
 def get_discrete_state(snake, food):
     discrete_state = (int((food[0]-snake[0])/10), int((food[1]-snake[1])/10))
