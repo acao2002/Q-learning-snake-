@@ -15,9 +15,12 @@ class Snake:
         self.color = color
         self.size = size 
         self.step = size
+        self.length = 1
+        self.snakelist = [self.position]
     
     def start(self):
-        pygame.draw.rect(dis, self.color, [self.x1, self.y1, self.size, self.size])
+        for i in self.snakelist:
+            pygame.draw.rect(dis, self.color, [i[0], i[1], self.size, self.size])
 
     def left(self): 
         self.x1_change = -self.step
@@ -39,6 +42,9 @@ class Snake:
         self.x1 += self.x1_change
         self.y1 += self.y1_change
         self.position =(self.x1,self.y1)
+        self.snakelist.append(self.position)
+        if len(self.snakelist) > self.length:
+            del(self.snakelist[0])
     
     def checkposition(self):
         if self.x1 >= dis_width or self.x1 < 0 or self.y1 >= dis_height or self.y1 < 0:
@@ -51,6 +57,8 @@ class Snake:
         self.x1_change = 0
         self.y1_change = 0
         self.position = (self.x1,self.y1)
+        self.length = 1
+        self.snakelist=[self.position]
 
     def move(self, action):
         if action == 0:

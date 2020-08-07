@@ -2,8 +2,8 @@ import pickle
 import pygame
 import time
 import random
-from snakeClass import Snake 
-from snakeClass import Food
+from CompleteSnakeClass import Snake 
+from CompleteSnakeClass import Food
 import numpy as np
 
 
