@@ -7,7 +7,7 @@ from CompleteSnakeClass import Food
 import numpy as np
 
 
-pkl_file = open('data.pkl', 'rb')
+pkl_file = open("QlearningCompleteSnake/SnakeQtable.pkl",'rb')
 
 q_table = pickle.load(pkl_file)
 
@@ -29,25 +29,28 @@ pygame.display.set_caption('Snake Game by An Cao')
 clock = pygame.time.Clock()
  
 snake_block = 10
-snake_speed = 10
+snake_speed = 5
 
-def get_discrete_state(snake, food):
+def get_discrete_state(snake, food, centerofmass):
     discrete_state = (int((food[0]-snake[0])/10), int((food[1]-snake[1])/10))
-    return tuple(discrete_state)
+    return (tuple(discrete_state), centerofmass)
 
 def gameLoop():
-    snake = Snake(black, snake_block)
+    snake = Snake(black, snake_block, 1)
     food = Food(green, snake_block)
-    current_state = get_discrete_state(snake.position, food.position)
+    current_state = get_discrete_state(snake.position, food.position, snake.centerofmass())
     game_over = False
     while not game_over: 
             action = np.argmax(q_table[current_state])
             snake.move(action)
             snake.updateposition()     
-            new_state = get_discrete_state(snake.position, food.position)     
+            new_state = get_discrete_state(snake.position, food.position, snake.centerofmass())     
             if snake.position == food.position:       
                 food.restart()
-            
+                snake.length += 1
+            CenterSnake = snake.centerofmass()
+            if snake.checksuicide():
+                game_over = True
             if snake.checkposition():     
                 game_over = True
                 

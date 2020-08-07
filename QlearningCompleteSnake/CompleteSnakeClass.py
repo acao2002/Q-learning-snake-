@@ -1,5 +1,6 @@
 import random
 import pygame
+import math
  
 dis_width = 150
 dis_height = 100
@@ -11,11 +12,12 @@ class Snake:
     x1_change = 0
     y1_change = 0
     position = (x1,y1)
-    def __init__(self, color, size):
+    def __init__(self, color, size, initiallength):
         self.color = color
         self.size = size 
         self.step = size
-        self.length = 1
+        self.initallength = initiallength
+        self.length = self.initallength
         self.snakelist = [self.position]
     
     def start(self):
@@ -47,17 +49,25 @@ class Snake:
             del(self.snakelist[0])
     
     def checkposition(self):
+        
         if self.x1 >= dis_width or self.x1 < 0 or self.y1 >= dis_height or self.y1 < 0:
             return True
         else: 
             return False
+    def checksuicide(self):
+        check = False 
+        for x in self.snakelist[:-1]:
+            if x == self.position:
+                check = True
+        return check
+
     def reset(self):
         self.x1 = 70
         self.y1 = 50
         self.x1_change = 0
         self.y1_change = 0
         self.position = (self.x1,self.y1)
-        self.length = 1
+        self.length = self.initallength
         self.snakelist=[self.position]
 
     def move(self, action):
@@ -69,7 +79,21 @@ class Snake:
             self.up()
         if action == 3:
             self.down()
-     
+
+    def centerofmass(self):
+        Cx = 0 
+        Cy = 0
+        distancefromcenter = 0 
+        if len(self.snakelist) > 1:
+            for x in self.snakelist:
+                Cx += x[0]
+                Cy += x[1]
+            Cx = math.floor(Cx/(len(self.snakelist)))
+            Cy = math.floor(Cy/(len(self.snakelist)))
+            distancefromcenter = (math.ceil((Cx-self.x1)/10),math.ceil((Cy-self.y1)/10))
+        else: 
+            distancefromcenter = (0,0) 
+        return distancefromcenter
 
 class Food:
      foodx = round(random.randrange(0, dis_width - 20) / 10.0) * 10.0
