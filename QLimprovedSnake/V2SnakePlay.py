@@ -19,11 +19,13 @@ black = (0, 0, 0)
 red = (213, 50, 80)
 green = (0, 255, 0)
 blue = (50, 153, 213)
- 
-dis_width = 750
+screen_height = 400 
+dis_width = 450
 dis_height = 300
+pygame.font.init()
+myfont = pygame.font.SysFont('Comic Sans MS', 20)
  
-dis = pygame.display.set_mode((dis_width, dis_height))
+dis = pygame.display.set_mode((dis_width, screen_height))
 pygame.display.set_caption('Snake Game by An Cao')
  
 clock = pygame.time.Clock()
@@ -55,7 +57,7 @@ def checkfoodP(snake,food):
     for x in snake.snakelist: 
         if x == food.position:
             food.restart()
-            checkfood(snake,food)
+            checkfoodP(snake,food)
         else:
             pass
 
@@ -67,6 +69,7 @@ def gameLoop():
     food = Food(green, snake_block)
     current_state = get_discrete_state(snake, food, snake.checksurrounding())
     game_over = False
+    
     while not game_over: 
             action = np.argmax(q_table[current_state])
             snake.move(action)
@@ -77,11 +80,15 @@ def gameLoop():
                 checkfoodP(snake,food)
                 snake.length += 1
             if snake.checkposition():     
-                game_over = True
-                
+                game_over = True 
             dis.fill(white)
             snake.start()
             food.start()
+            pygame.draw.rect(dis, black, (0, 0, 450, 300), 3) 
+            textsurface = myfont.render(('generation: 10000 '), False, (0, 0, 0))  
+            score = myfont.render(('score: '+ (str(snake.length))), False, (0, 0, 0))  
+            dis.blit(textsurface,(20,320))
+            dis.blit(score, (300,320))
             pygame.display.update()
             clock.tick(snake_speed)
             current_state = new_state

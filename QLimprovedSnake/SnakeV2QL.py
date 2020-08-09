@@ -11,9 +11,10 @@ LEARNING_RATE = 0.5
 
 DISCOUNT = 0.95
 EPISODES = 10000
-SHOW_EVERY = 1
+SHOW_EVERY = 500
 snake_block = 10
 snake_speed = 100000
+snake_speedshow = 30
 
 epsilon = 0  # not a constant, qoing to be decayed
 START_EPSILON_DECAYING = 1
@@ -26,7 +27,6 @@ discrete_os_win_size = 10
 file = open("QlimprovedSnake/SnakeQtable.pkl",'rb')
 q_table = pickle.load(file)
 file.close()
-
 '''
 q_table = {}
 for i in range(0, 2):
@@ -74,19 +74,17 @@ black = (0, 0, 0)
 red = (213, 50, 80)
 green = (0, 255, 0)
 blue = (50, 153, 213)
- 
-dis_width = 750
+screen_height = 400 
+dis_width = 450
 dis_height = 300
  
-dis = pygame.display.set_mode((dis_width, dis_height))
+dis = pygame.display.set_mode((dis_width, screen_height))
 pygame.display.set_caption('Snake Game by An Cao')
  
 clock = pygame.time.Clock()
  
-
- 
-font_style = pygame.font.SysFont("bahnschrift", 25)
-score_font = pygame.font.SysFont("comicsansms", 35)
+pygame.font.init()
+myfont = pygame.font.SysFont('Comic Sans MS', 20)
 
 reward = 0
 
@@ -169,10 +167,17 @@ def gameLoop():
             
             dis.fill(white)
             if episode % SHOW_EVERY == 0:
+                pygame.draw.rect(dis, black, (0, 0, 450, 300), 3) 
+                textsurface = myfont.render(('generation: '+ (str(episode))), False, (0, 0, 0))  
+                score = myfont.render(('score: '+ (str(snake.length))), False, (0, 0, 0))  
+                dis.blit(textsurface,(20,320))
+                dis.blit(score, (300,320))
                 snake.start()
                 food.start()
                 pygame.display.update()
-            clock.tick(snake_speed)
+                clock.tick(snake_speedshow)
+            else:
+                clock.tick(snake_speed)
             current_distance = new_distance
             current_state = new_state
             

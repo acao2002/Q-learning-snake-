@@ -1,8 +1,7 @@
 import random
 import pygame
 import math
- 
-dis_width = 750
+dis_width = 450
 dis_height = 300
 snake_block = 10
 dis = pygame.display.set_mode((dis_width, dis_height))
@@ -68,8 +67,8 @@ class Snake:
             return False
 
     def reset(self):
-        self.x1 = 70
-        self.y1 = 50
+        self.x1 = 350
+        self.y1 = 150
         self.x1_change = 0
         self.y1_change = 0
         self.position = (self.x1,self.y1)
