@@ -16,7 +16,7 @@ snake_block = 10
 snake_speed = 100000
 snake_speedshow = 30
 
-epsilon = 0  # not a constant, qoing to be decayed
+epsilon = 0 # not a constant, qoing to be decayed
 START_EPSILON_DECAYING = 1
 END_EPSILON_DECAYING = EPISODES
 epsilon_decay_value = epsilon/(END_EPSILON_DECAYING - START_EPSILON_DECAYING)
