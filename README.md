@@ -2,6 +2,11 @@
 
 An AI that learns to play snake using Q learning, a type of Reinforcement Learning. The project evaluates the Q values at different states of the snake and utilizes it to predict the correct movement. Q values are calculated based on the rewards when eating food evading walls or itself. 
 
+## Technologies
+1. Python 3
+2. Reinforcement Learning
+3. Object-Oriented Programming
+4. Q-Learning
 ## Install 
 
 This project needs Python 3.6+ and pickle, numpy and pygame installed
