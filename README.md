@@ -18,18 +18,27 @@ git clone https://github.com/acao2002/snake-ga.git
 
 ## Launch 
 
-The snake is already trained and it is using the saved model SnakeQtable.pkl to run. If you want to train the snake and watch the training process, run this in the QLimprovedSnake folder
+- The snake is already trained and it is using the saved model SnakeQtable.pkl to run. If you want to train the snake and watch the training process, run this in the QLimprovedSnake folder
 
 ```
 python SnakeV2QL.py 
 
 ```
-To launch the AI, run this in the same folder
+- The screen will show the snake's performance every 500 episodes and will run for a total of 10000 episodes. Hence, you can see how the snake improves as it gets more exposure to the game.
+
+
+- If you just want to see the snake after being trained beat the game using the saved model, run this in the same folder
 
 ```
 python V2SnakePlay.py
 
 ```
+
+## Enjoy the AI! 
+
+Now you can execute the program and watch the AI scoops up food!
+
+![game image](./snake.png)
 
 ## License 
 
