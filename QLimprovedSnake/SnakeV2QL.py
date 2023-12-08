@@ -7,16 +7,16 @@ import numpy as np
 import pickle
 import math 
 
-LEARNING_RATE = 0.5
 
-DISCOUNT = 0.95
+LEARNING_RATE = 0.3
+DISCOUNT = 0.93
 EPISODES = 10000
-SHOW_EVERY = 500
+SHOW_EVERY = 5000
 snake_block = 10
 snake_speed = 100000
 snake_speedshow = 30
 
-epsilon = 0 # not a constant, qoing to be decayed
+epsilon = 1 # not a constant, qoing to be decayed
 START_EPSILON_DECAYING = 1
 END_EPSILON_DECAYING = EPISODES
 epsilon_decay_value = epsilon/(END_EPSILON_DECAYING - START_EPSILON_DECAYING)
@@ -25,17 +25,19 @@ DISCRETE_OS_SIZE = [15, 10]
 discrete_os_win_size = 10
 
 file = open("QlimprovedSnake/SnakeQtable.pkl",'rb')
-q_table = pickle.load(file)
+q_table = pickle.load(file) #load exisiting qtable
 file.close()
-'''
-q_table = {}
-for i in range(0, 2):
-    for ii in range(0, 2):
-        for iii in range(0,2):
-            for iiii in range(0,2):
-                for iiiii in range(0,8):
-                    q_table[(i, ii,iii,iiii), (iiiii)] = [np.random.uniform(-5, 0) for i in range(4)]
-'''
+
+#train snake from initialized q table
+
+# q_table = {}
+# for i in range(0, 2):
+#     for ii in range(0, 2):
+#         for iii in range(0,2):
+#             for iiii in range(0,2):
+#                 for iiiii in range(0,8):
+#                     q_table[(i, ii,iii,iiii), (iiiii)] = [np.random.uniform(-5, 0) for i in range(4)]
+
 def findRelativeP(snake, food):
     state = 0 
     if snake.x1 < food.x1 and snake.y1 < food.y1:
@@ -92,6 +94,8 @@ reward = 0
 def gameLoop():
     snake = Snake(black, snake_block, 1)
     food = Food(green, snake_block)
+    scores = [] 
+    count = 0 
     for episode in range(EPISODES):
         global epsilon
         current_state = get_discrete_state(snake, food, snake.checksurrounding())
@@ -121,7 +125,7 @@ def gameLoop():
                 r1 = 50
                 food.restart()
                 snake.length +=1 
-                print('point')
+                #print('point')
 
             else: 
                 r1 = 0
@@ -147,6 +151,9 @@ def gameLoop():
                 current_distance = new_distance
                 
                 current_state = new_state
+                if count % 10 == 0:
+                    scores.append(snake.length)
+                #scores keep track of snake performance overtime
                 snake.reset()
                 game_over = True
             else: 
@@ -180,16 +187,21 @@ def gameLoop():
                 clock.tick(snake_speed)
             current_distance = new_distance
             current_state = new_state
-            
-        
+               
+        count +=1
+ 
+        if count % 500 == 0:
+            print(scores)
         if END_EPSILON_DECAYING >= episode >= START_EPSILON_DECAYING:
             epsilon -= epsilon_decay_value
         print(episode)
+       
     output = open('QlimprovedSnake/SnakeQtable.pkl', 'wb')
     pickle.dump(q_table, output)
     output.close()
     pygame.quit()
     quit()
+
  
 
 gameLoop()

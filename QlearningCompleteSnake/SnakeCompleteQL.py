@@ -24,16 +24,17 @@ DISCRETE_OS_SIZE = [15, 10]
 discrete_os_win_size = 10
 
 file = open("QlearningCompleteSnake/SnakeQtable.pkl",'rb')
-q_table = pickle.load(file)
+# q_table = pickle.load(file) #uncomment this to use existing qtable 
 file.close()
-'''
+
+#qtable for training
 q_table = {}
 for i in range(-15, 15):
     for ii in range(-10, 10):
         for iii in range(-15,15):
             for iiii in range(-10,10):
                 q_table[(i, ii), (iii, iiii)] = [np.random.uniform(-3, 0) for i in range(4)]
-'''
+
 
 def get_discrete_state(snake, food, centerofmass):
     discrete_state = (int((food[0]-snake[0])/10), int((food[1]-snake[1])/10))

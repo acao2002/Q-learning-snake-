@@ -110,7 +110,7 @@ class Snake:
         if self.upP[1] >= dis_height:
             t = 1
         if self.downP[1] < 0:
-            d = 0
+            d = 1
 
         return(l,r,t,d)
 
